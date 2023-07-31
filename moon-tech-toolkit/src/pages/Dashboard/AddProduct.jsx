@@ -1,13 +1,17 @@
-import React from "react";
 import { useForm } from "react-hook-form";
-// import { useDispatch } from "react-redux";
+import { addProduct } from "../../features/products/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 // import { addProduct } from "../../redux/actions/productAction";
 // import addProductData from "../../redux/thunk/products/addProductData";
 
 const AddProduct = () => {
   const { register, handleSubmit } = useForm();
-  // const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoading, postSuccess, error, isError } = useSelector(
+    (state) => state.products
+  );
   const submit = (data) => {
     const product = {
       model: data.model,
@@ -24,7 +28,8 @@ const AddProduct = () => {
     };
 
     console.log(product);
-    // dispatch(addProductData(product));
+    dispatch(addProduct(product));
+    navigate("/dashboard");
   };
 
   return (

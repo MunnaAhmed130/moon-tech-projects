@@ -21,5 +21,6 @@ module.exports = {
       { vars: "all", args: "after-used", ignoreRestSiblings: false },
     ],
     "react/prop-types": [0],
+    "no-undef": ["off", { typeof: true }],
   },
 };

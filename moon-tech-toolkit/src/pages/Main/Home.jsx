@@ -60,6 +60,7 @@ const Home = () => {
   //     <ProductCard product={product} key={product.model} />
   //   ));
   // }
+
   // if (keyword) {
   //   content = products
   //     .filter((product) =>
