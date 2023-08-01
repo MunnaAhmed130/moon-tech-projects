@@ -1,22 +1,25 @@
-import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-// import { useDispatch, useSelector } from "react-redux";
-import AddProduct from "./AddProduct";
-// import loadProductData from "../../redux/thunk/products/fetchProducts";
-// import { getProduct } from "../../redux/actions/productAction";
-// import updateProductData from "../../redux/thunk/products/updateProduct";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeProduct,
+  toggleUpdateSuccess,
+} from "../../features/products/productsSlice";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 const EditProduct = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const params = useParams();
   // console.log(params._id);
 
-  // const products = useSelector((state) => state.product.products);
+  const { products, isLoading, isError, error, updateSuccess } = useSelector(
+    (state) => state.products
+  );
   // console.log(products);
 
   // console.log(product.model);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const submit = (data) => {
     const product = {
@@ -35,18 +38,28 @@ const EditProduct = () => {
       spec: [],
     };
 
-    console.log(product);
-    // dispatch(updateProductData(product, product._id));
+    // console.log(product._id);
+    dispatch(changeProduct(product));
   };
 
-  // const product = products.filter(products);
-  // useEffect(() => {
-  //   dispatch(loadProductData());
-  // }, [dispatch]);
+  useEffect(() => {
+    if (isLoading) {
+      toast.loading("Updating", { id: "updateProduct" });
+    }
+
+    if (!isLoading && updateSuccess) {
+      toast.success("Product Updated", { id: "updateProduct" });
+      dispatch(toggleUpdateSuccess());
+    }
+
+    if (!isLoading && isError) {
+      toast.error(error, { id: "updateProduct" });
+    }
+  }, [isLoading, updateSuccess, error, isError]);
 
   let content;
   if (params._id) {
-    // content = products.filter((product) => product._id === params._id);
+    content = products.filter((product) => product._id === params._id);
     // .map((product) => console.log(product));
   }
 

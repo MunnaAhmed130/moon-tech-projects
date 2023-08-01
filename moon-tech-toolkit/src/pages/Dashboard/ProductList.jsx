@@ -1,12 +1,29 @@
 import { BiEditAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getProducts } from "../../features/products/productsSlice";
+import {
+  getProducts,
+  removeProduct,
+  toggleDeleteSuccess,
+} from "../../features/products/productsSlice";
 import { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 const ProductList = () => {
-  const products = useSelector((state) => state.products.products);
+  const { products, isLoading, isError, error, deleteSuccess } = useSelector(
+    (state) => state.products
+  );
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!isLoading && deleteSuccess) {
+      toast.success("Product successfully removed", { id: "removeProduct" });
+      dispatch(toggleDeleteSuccess());
+    }
+
+    if (!isLoading && isError) {
+      toast.error(error, { id: "removeProduct" });
+    }
+  }, [isLoading, deleteSuccess, error, isError]);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -70,9 +87,7 @@ const ProductList = () => {
                   </td>
                   <td className="p-2">
                     <div className="flex justify-center">
-                      <button
-                      // onClick={() => dispatch(deleteProduct(_id))}
-                      >
+                      <button onClick={() => dispatch(removeProduct(_id))}>
                         <svg
                           className="w-8 h-8 hover:text-blue-600 rounded-full hover:bg-gray-100 p-1"
                           fill="none"
@@ -91,7 +106,7 @@ const ProductList = () => {
                       <Link to={`edit-product/${_id}`}>
                         <BiEditAlt
                           className="w-8 h-8 hover:text-blue-600 rounded-full hover:bg-gray-100 p-1 ml-2"
-                          onClick={() => console.log(_id)}
+                          // onClick={() => console.log(_id)}
                         />
                       </Link>
                     </div>
