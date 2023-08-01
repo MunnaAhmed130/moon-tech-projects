@@ -1,29 +1,17 @@
-// import React, { useEffect, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { removeProduct } from "../../redux/actions/productAction";
-// import deleteProduct from "../../redux/thunk/products/deleteProduct";
-// import loadProductData from "../../redux/thunk/products/fetchProducts";
 import { BiEditAlt } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchProducts } from "../../features/products/productsAPI";
 import { getProducts } from "../../features/products/productsSlice";
 import { useEffect } from "react";
 
 const ProductList = () => {
   const products = useSelector((state) => state.products.products);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getProducts());
   }, []);
-  // const [products, setProducts] = useState([]);
 
-  // useEffect(() => {
-  //     fetch("https://moon-tech-server-01.vercel.app/product")
-  //         .then((res) => res.json())
-  //         .then((data) => setProducts(data));
-  // });
-  // const products = [];
   return (
     <div className="flex flex-col justify-center items-center h-full w-full ">
       <div className="w-full max-w-7xl mx-auto rounded-lg  bg-white shadow-lg border border-gray-200">
