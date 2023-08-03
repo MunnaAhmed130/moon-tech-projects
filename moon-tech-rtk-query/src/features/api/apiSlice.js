@@ -7,9 +7,21 @@ const productApi = createApi({
   }),
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: () => "/products",
+      // query: () => "/products",
+      query: () => ({
+        url: "/products",
+      }),
+    }),
+    addProducts: builder.mutation({
+      query: (data) => ({
+        url: "/products",
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });
+
+export const { useGetProductsQuery, useAddProductsMutation } = productApi;
 
 export default productApi;

@@ -6,6 +6,7 @@ import {
   clearAll,
 } from "../../features/filter/filterSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 
 const Home = () => {
   const { brands, stock, clear } = useSelector((state) => state.filter);
@@ -16,31 +17,38 @@ const Home = () => {
   //   const products = useSelector((state) => state.product.products);
 
   const dispatch = useDispatch();
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:4000/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:4000/products")
+  //     .then((res) => res.json())
+  //     .then((data) => setProducts(data));
+  // }, []);
+
+  const { data, isLoading, isSuccess, isError, error } = useGetProductsQuery();
+
+  console.log(data);
+
+  const products = data;
 
   const activeClass = "text-white  bg-indigo-500 border-white";
 
   let content;
 
-  // if (isLoading) {
-  //   content = <h2>Loading ..</h2>;
-  // }
-  // if (isError) {
-  //   content = <h2>{error}</h2>;
-  // }
-  if (products.length) {
+  if (isLoading) {
+    content = <h2 className="text-center w-full">Loading ..</h2>;
+  }
+  if (isError) {
+    content = <h2>Something went wrong:{error.status}</h2>;
+  }
+
+  if (products) {
     content = products.map((product) => (
       <ProductCard product={product} key={product.model} />
     ));
   }
 
-  if (products.length && (stock || brands.length)) {
+  if (products && (stock || brands.length)) {
     content = products
       .filter((product) => {
         if (stock) {
@@ -57,7 +65,7 @@ const Home = () => {
       .map((product) => <ProductCard product={product} key={product.model} />);
   }
 
-  if (products.length && clear) {
+  if (products && clear) {
     content = products.map((product) => (
       <ProductCard product={product} key={product.model} />
     ));
