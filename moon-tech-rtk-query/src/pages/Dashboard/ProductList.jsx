@@ -3,18 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useGetProductsQuery } from "../../features/api/apiSlice";
+import {
+  useGetProductsQuery,
+  useRemoveProductsMutation,
+} from "../../features/api/apiSlice";
 
 const ProductList = () => {
   // const { products, isLoading, isError, error, deleteSuccess } = useSelector(
   //   (state) => state.products
   // );
-  const dispatch = useDispatch();
 
-  const { data } = useGetProductsQuery();
+  const { data, isLoading } = useGetProductsQuery();
 
   const products = data;
   console.log(products);
+
   // const [products, setProducts] = useState([]);
 
   // useEffect(() => {
@@ -37,6 +40,9 @@ const ProductList = () => {
   //   dispatch(getProducts());
   // }, []);
 
+  if (isLoading) {
+    return <h2>Loading ..</h2>;
+  }
   return (
     <div className="flex flex-col justify-center items-center h-full w-full ">
       <div className="w-full max-w-7xl mx-auto rounded-lg  bg-white shadow-lg border border-gray-200">
@@ -70,7 +76,11 @@ const ProductList = () => {
             <tbody className="text-sm divide-y divide-gray-100">
               {products &&
                 products.map((productData) => (
-                  <ProductRow {...productData} key={productData.model} />
+                  <ProductRow
+                    // removeProduct={removeProduct}
+                    productData={productData}
+                    key={productData.model}
+                  />
                 ))}
             </tbody>
           </table>
@@ -81,8 +91,25 @@ const ProductList = () => {
   );
 };
 
-const ProductRow = (productData) => {
+const ProductRow = ({ productData }) => {
   const { model, brand, price, status, _id } = productData;
+  const [removeProduct, { isError, isSuccess, isLoading, error }] =
+    useRemoveProductsMutation();
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.loading("Removing product", { id: "removeProduct" });
+    }
+
+    if (isSuccess) {
+      toast.success("Product successfully removed", { id: "removeProduct" });
+    }
+
+    if (isError) {
+      toast.error(error, { id: "removeProduct" });
+    }
+  }, [isLoading, isSuccess, error, isError]);
+
   return (
     <tr>
       <td className="p-2">
@@ -108,7 +135,7 @@ const ProductRow = (productData) => {
       </td>
       <td className="p-2">
         <div className="flex justify-center">
-          <button onClick={() => dispatch(removeProduct(_id))}>
+          <button onClick={() => removeProduct(_id)}>
             <svg
               className="w-8 h-8 hover:text-blue-600 rounded-full hover:bg-gray-100 p-1"
               fill="none"

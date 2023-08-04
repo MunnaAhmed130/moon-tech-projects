@@ -3,29 +3,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { useAddProductsMutation } from "../../features/api/apiSlice";
 
 const AddProduct = () => {
   const { register, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [postProduct, { isLoading, isError, error, isSuccess }] =
+    useAddProductsMutation();
+
   // const { isLoading, postSuccess, error, isError } = useSelector(
   //   (state) => state.products
   // );
 
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     toast.loading("Posting", { id: "addProduct" });
-  //   }
+  useEffect(() => {
+    if (isLoading) {
+      toast.loading("Posting", { id: "addProduct" });
+    }
 
-  //   if (!isLoading && postSuccess) {
-  //     toast.success("Product added", { id: "addProduct" });
-  //     dispatch(togglePostSuccess());
-  //   }
+    if (isSuccess) {
+      toast.success("Product added", { id: "addProduct" });
+    }
 
-  //   if (!isLoading && isError) {
-  //     toast.error(error, { id: "addProduct" });
-  //   }
-  // }, [isLoading, postSuccess, error, isError]);
+    if (isError) {
+      toast.error(error, { id: "addProduct" });
+    }
+  }, [isLoading, isSuccess, error, isError]);
 
   const submit = (data) => {
     const product = {
@@ -44,6 +48,7 @@ const AddProduct = () => {
 
     // console.log(product);
     // dispatch(addProduct(product));
+    postProduct(product);
     reset();
     // navigate("/dashboard");
   };

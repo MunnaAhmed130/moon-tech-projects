@@ -10,11 +10,6 @@ import { useGetProductsQuery } from "../../features/api/apiSlice";
 
 const Home = () => {
   const { brands, stock, clear } = useSelector((state) => state.filter);
-  // const { products, isLoading, isError, error } = useSelector(
-  //   (state) => state.products
-  // );
-  //   const keyword = useSelector((state) => state.filter.keyword);
-  //   const products = useSelector((state) => state.product.products);
 
   const dispatch = useDispatch();
   // const [products, setProducts] = useState([]);
@@ -25,9 +20,14 @@ const Home = () => {
   //     .then((data) => setProducts(data));
   // }, []);
 
+  // const { data, isLoading, isSuccess, isError, error } = useGetProductsQuery(
+  //   null,
+  //   { refetchOnMountOrArgChange: true }
+  // );
+
   const { data, isLoading, isSuccess, isError, error } = useGetProductsQuery();
 
-  console.log(data);
+  // console.log(data);
 
   const products = data;
 
